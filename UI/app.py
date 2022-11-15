@@ -1,5 +1,6 @@
 from flask import Flask, flash, request, redirect, url_for, render_template
 import pandas as pd
+from imagescraper import ImageScraper
 
 app = Flask(__name__)
 app.config["Debug"] = True
@@ -7,6 +8,10 @@ app.config["Debug"] = True
 matric_factorization_df = pd.read_csv("file2.csv")
 knn_df = pd.read_csv("file1.csv")
 dff = pd.read_csv("images_url.csv", encoding="ISO-8859-1")
+
+
+def get_movie_name(address):
+    return address.split("/")[-1].split(".")[0]
 
 
 @app.route("/homepage", methods=["GET"])
@@ -29,12 +34,16 @@ def show_recommendation():
             for y in data2:
                 if str(x) in y:
                     print(y[1])
-                    matrix_send_data.append(y[1])
+                    matrix_send_data.append(
+                        ImageScraper().get_poster_url(get_movie_name(y[1]))
+                    )
         for x in knn_data:
             for y in data2:
                 if str(x) in y:
                     print(y[1])
-                    knn_send_data.append(y[1])
+                    knn_send_data.append(
+                        ImageScraper().get_poster_url(get_movie_name(y[1]))
+                    )
         return render_template(
             "portfolio-details.html",
             matrix_data=matrix_send_data,
