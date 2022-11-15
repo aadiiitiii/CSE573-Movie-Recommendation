@@ -8,17 +8,13 @@ imgscrape = ImageScraper()
 
 matric_factorization_df = pd.read_csv("file2.csv")
 knn_df = pd.read_csv("file1.csv")
-dff = pd.read_csv("images_url.csv", encoding="ISO-8859-1")
-
 
 def get_movie_name(address):
     return address.split("/")[-1].split(".")[0]
 
-
 @app.route("/homepage", methods=["GET"])
 def homepage():
     return render_template("index.html")
-
 
 @app.route("/show_recommendation", methods=["POST"])
 def show_recommendation():
@@ -28,26 +24,24 @@ def show_recommendation():
             raise UserIDException(user_id)
         matrix_data = list(matric_factorization_df.iloc[user_id - 1])
         knn_data = list(knn_df.iloc[user_id - 1])
-        data2 = dff.values.tolist()
         matrix_send_data = []
         knn_send_data = []
         for x in matrix_data:
-            for y in data2:
-                if str(x) in y:
-                    print(y[1])
-                    matrix_send_data.append(
-                        imgscrape.get_poster_url(get_movie_name(y[1]))
-                    )
+            print(x)
+            imgscrape.download_poster(x)
+            matrix_send_data.append("/posters/"+x)
+        
         for x in knn_data:
-            for y in data2:
-                if str(x) in y:
-                    print(y[1])
-                    knn_send_data.append(imgscrape.get_poster_url(get_movie_name(y[1])))
+            print(x)
+            imgscrape.download_poster(x)
+            knn_send_data.append("/posters/"+x)
+
         return render_template(
             "portfolio-details.html",
             matrix_data=matrix_send_data,
             knn_data=knn_send_data,
         )
+
     except UserIDException as e:
         return f"Please enter a userid between 1 and 610, your userid was{str(e.value)}"
 
@@ -59,6 +53,5 @@ class UserIDException(Exception):
     # __str__ is to print() the value
     def __str__(self):
         return repr(self.value)
-
 
 app.run()
