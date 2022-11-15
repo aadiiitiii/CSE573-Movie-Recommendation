@@ -4,6 +4,7 @@ from imagescraper import ImageScraper
 
 app = Flask(__name__)
 app.config["Debug"] = True
+imgscrape = ImageScraper()
 
 matric_factorization_df = pd.read_csv("file2.csv")
 knn_df = pd.read_csv("file1.csv")
@@ -35,15 +36,13 @@ def show_recommendation():
                 if str(x) in y:
                     print(y[1])
                     matrix_send_data.append(
-                        ImageScraper().get_poster_url(get_movie_name(y[1]))
+                        imgscrape.get_poster_url(get_movie_name(y[1]))
                     )
         for x in knn_data:
             for y in data2:
                 if str(x) in y:
                     print(y[1])
-                    knn_send_data.append(
-                        ImageScraper().get_poster_url(get_movie_name(y[1]))
-                    )
+                    knn_send_data.append(imgscrape.get_poster_url(get_movie_name(y[1])))
         return render_template(
             "portfolio-details.html",
             matrix_data=matrix_send_data,
