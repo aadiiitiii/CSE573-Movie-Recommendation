@@ -28,13 +28,17 @@ def show_recommendation():
         knn_send_data = []
         for x in matrix_data:
             print(x)
-            imgscrape.download_poster(x)
-            matrix_send_data.append("/posters/"+x)
+            # imgscrape.download_poster(x)
+            # matrix_send_data.append("/posters/"+x)
+            url = imgscrape.get_poster_url(x)
+            matrix_send_data.append(url)
         
         for x in knn_data:
             print(x)
-            imgscrape.download_poster(x)
-            knn_send_data.append("/posters/"+x)
+            # imgscrape.download_poster(x)
+            # knn_send_data.append("/posters/"+x)
+            url = imgscrape.get_poster_url(x)
+            knn_send_data.append(url)
 
         return render_template(
             "portfolio-details.html",

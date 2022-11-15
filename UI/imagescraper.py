@@ -7,6 +7,17 @@ from io import BytesIO
 
 
 class ImageScraper:
+    def get_poster_url(self, title):
+        url = f"http://www.imdb.com/find?s=tt&q={title}"
+        response = requests.get(url)
+        html = response.content
+        soup = BeautifulSoup(html, "html.parser")
+        if result := soup.find("img", {"class": "ipc-image"}):
+            href = result.get("srcset").split(" ")[-2]
+            print(href)
+            return href
+
+        return "Movie not found"
 
     def download_poster(self, title):
         print(title)
