@@ -29,8 +29,3 @@ class ImageScraper:
         else:
             print(f"No poster found for {title}")
 
-
-if __name__ == "__main__":
-    scraper = ImageScraper()
-    movie = "Avatar 2"
-    scraper.download_poster(scraper.get_poster_url(movie), movie, "images")
