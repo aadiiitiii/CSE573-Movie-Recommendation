@@ -16,8 +16,8 @@ class ImageScraper:
             href = result.get("srcset").split(" ")[-2]
             print(href)
             return href
-        else:
-            return "Movie not found"
+
+        return "Movie not found"
 
     def download_poster(self, src, title, dir_name):
         if src:
