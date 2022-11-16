@@ -45,4 +45,3 @@ class ImageScraper:
             img.save(f"{dir_name}/{title}.{ext}")
         else:
             print(f"No poster found for {title}")
-
