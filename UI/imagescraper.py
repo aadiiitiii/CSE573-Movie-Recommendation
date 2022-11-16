@@ -1,4 +1,5 @@
 # Get Movie Poster from IMDB from the Movie Title
+import json
 from bs4 import BeautifulSoup
 import requests
 import os
@@ -7,37 +8,47 @@ from io import BytesIO
 
 
 class ImageScraper:
+    def beautiful_soup(self, url):
+        response = requests.get(url)
+        return BeautifulSoup(response.content, "html.parser")
+
+    def get_IMDb_ID(self, title):
+        url = f"http://www.imdb.com/find?s=tt&q={title}"
+        soup = self.beautiful_soup(url)
+        if result := soup.find("a", {"class": "ipc-metadata-list-summary-item__t"}):
+            return result.get("href").split("/")[2]
+        return None
+
+    def get_movie_info_IMDb(self, title):
+        imdb_id = self.get_IMDb_ID(title)
+        if not imdb_id:
+            return None
+        print(imdb_id)
+        url = f"https://www.imdb.com/title/{imdb_id}/?ref_=fn_tt_tt_1"
+        soup = self.beautiful_soup(url)
+        return json.loads(
+            str(soup.findAll("script", {"type": "application/ld+json"})[0].text)
+        )
+
     def get_poster_url(self, title):
-        url = f"http://www.imdb.com/find?s=tt&q={title}"
-        response = requests.get(url)
-        html = response.content
-        soup = BeautifulSoup(html, "html.parser")
-        if result := soup.find("img", {"class": "ipc-image"}):
-            href = result.get("srcset").split(" ")[-2]
-            print(href)
-            return href
+        if movie_info := self.get_movie_info_IMDb(title):
+            return movie_info["image"]
+        return None
 
-        return "Movie not found"
+    def download_poster(self, title, dir_name):
+        if src := self.get_poster_url(title):
+            if not os.path.isdir(dir_name):
+                os.mkdir(dir_name)
+            response = requests.get(src)
+            ext = src.split(".")[-1]
+            img = Image.open(BytesIO(response.content))
+            img.save(f"{dir_name}/{title}.{ext}")
+        else:
+            print(f"No poster found for {title}")
 
-    def download_poster(self, title):
-        print(title)
-        url = f"http://www.imdb.com/find?s=tt&q={title}"
-        response = requests.get(url)
-        html = response.content
-        soup = BeautifulSoup(html, "html.parser")
-        if result := soup.find("img", {"class": "ipc-image"}):
-            href = result.get("srcset").split(" ")[-2]
-            if href:
-                print(href)
-                src = href
-                response = requests.get(src)
-                img = Image.open(BytesIO(response.content))
-                input = title
-                rep = "%20"
-                for i in range(len(input)):
-                    if (input[i] == ' '):
-                        input = input.replace(input[i], rep)
-                print(input)
-                img.save(f"posters/{input}.jpg", "JPEG")
-            else:
-                print(f"No poster found for {title}")
+
+# Trigger - Remove before commit
+if __name__ == "__main__":
+    imgscrape = ImageScraper()
+    print(imgscrape.get_poster_url("Avatar 2009"))
+
