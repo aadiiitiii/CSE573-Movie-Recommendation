@@ -46,9 +46,3 @@ class ImageScraper:
         else:
             print(f"No poster found for {title}")
 
-
-# Trigger - Remove before commit
-if __name__ == "__main__":
-    imgscrape = ImageScraper()
-    print(imgscrape.get_poster_url("Avatar 2009"))
-
