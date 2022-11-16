@@ -26,10 +26,8 @@ def recommend(choice):
     # the it will call create_model() function.
     try:
         model.get_params()
-    except:
+    except Exception:
         data, model, count_matrix = create_model()
-        # distances,indices = model.kneighbors(count_matrix[choice_index],n_neighbors=11)
-
     # If movie name exactly matches with the name of movie in the data's title column
     # then this block will be executed.
     choice = re.sub("[^a-zA-Z1-9]", "", choice).lower()
@@ -76,4 +74,3 @@ def generate_csv(recommend_list):
     recommend_list = pd.DataFrame(recommend_list)
     recommend_list_transpose = recommend_list.transpose()
     recommend_list_transpose.to_csv("file3.csv", header=None, index=None)
-
