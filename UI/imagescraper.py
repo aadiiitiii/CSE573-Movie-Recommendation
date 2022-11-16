@@ -23,7 +23,6 @@ class ImageScraper:
         imdb_id = self.get_IMDb_ID(title)
         if not imdb_id:
             return None
-        print(imdb_id)
         url = f"https://www.imdb.com/title/{imdb_id}/?ref_=fn_tt_tt_1"
         soup = self.beautiful_soup(url)
         return json.loads(
