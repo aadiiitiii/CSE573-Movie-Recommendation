@@ -16,9 +16,9 @@ def get_movie_name(address):
 
 
 def generate_file3(movie_name):
-    movie_list = recommend(movie_name)
+    recommend(movie_name)
     content_based_rec = pd.read_csv("file3.csv")
-    return movie_list
+    return content_based_rec.columns.tolist()
 
 
 @app.route("/homepage", methods=["GET"])
@@ -26,7 +26,7 @@ def homepage():
     return render_template("index.html")
 
 
-@app.route("/content_based_recommendation", methods=["POST"])
+@app.route("/content_based", methods=["POST"])
 def show_content_based_recommendation():
     try:
         movie_name = request.form["movie_name"]
@@ -42,7 +42,7 @@ def show_content_based_recommendation():
             movie_list=movie_inputs,
         )
     except Exception:
-        return render_template("index.html")
+        return "Couldn't find that! Please try again."
 
 
 @app.route("/show_recommendation", methods=["POST"])

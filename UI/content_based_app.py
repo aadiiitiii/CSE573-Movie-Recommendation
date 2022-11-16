@@ -74,4 +74,4 @@ def recommend(choice):
 def generate_csv(recommend_list):
     recommend_list = pd.DataFrame(recommend_list)
     recommend_list_transpose = recommend_list.transpose()
-    recommend_list_transpose.to_csv("file3.csv", header=None, index=None)
+    recommend_list_transpose.to_csv("file3.csv", index=False, header=False)
