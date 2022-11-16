@@ -16,8 +16,9 @@ def get_movie_name(address):
 
 
 def generate_file3(movie_name):
-    recommend(movie_name)
-    return pd.read_csv("file3.csv")
+    movie_list = recommend(movie_name)
+    content_based_rec = pd.read_csv("file3.csv")
+    return movie_list
 
 
 @app.route("/homepage", methods=["GET"])
@@ -30,8 +31,15 @@ def show_content_based_recommendation():
     try:
         movie_name = request.form["movie_name"]
         movie_list = generate_file3(movie_name)
+        movie_inputs = []
+        for movie in movie_list:
+            img_url = imgscrape.get_poster_url(movie)
+            movie_inputs.append({"movie_name": movie, "img_url": img_url})
+
         return render_template(
-            "content_based_recommendation.html", movie_list=movie_list
+            "content_based_recommendation.html",
+            movie_name=movie_name,
+            movie_list=movie_inputs,
         )
     except Exception:
         return render_template("index.html")

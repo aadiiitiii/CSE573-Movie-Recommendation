@@ -65,6 +65,7 @@ def recommend(choice):
         ]
 
         generate_csv(movie_list[:10])
+        return movie_list[:10]
 
     else:
         return "opps! movie not found in our database"
